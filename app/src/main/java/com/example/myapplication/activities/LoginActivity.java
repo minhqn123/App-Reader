@@ -1,6 +1,5 @@
-package com.example.myapplication;
+package com.example.myapplication.activities;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -95,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot snapshot) {
                         String userType = "" +snapshot.child("userType").getValue();
 
-                        if(userType.equals("users")){
+                        if(userType.equals("user")){
                             startActivity(new Intent(LoginActivity.this, DashboardUserActivity.class));
                             finish();
                         }

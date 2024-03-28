@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 
+import com.example.myapplication.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -46,7 +47,7 @@ public class SplashActivity extends AppCompatActivity {
                         public void onDataChange(DataSnapshot snapshot) {
                             String userType = "" +snapshot.child("userType").getValue();
 
-                            if(userType.equals("users")){
+                            if(userType.equals("user")){
                                 startActivity(new Intent(SplashActivity.this, DashboardUserActivity.class));
                                 finish();
                             }
