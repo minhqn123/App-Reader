@@ -17,13 +17,17 @@ import android.widget.Toast;
 
 import com.example.myapplication.MyApplication;
 import com.example.myapplication.R;
+import com.example.myapplication.adapters.AdapterPdfFavorite;
 import com.example.myapplication.databinding.ActivityPdfDetailBinding;
+import com.example.myapplication.models.ModelPdf;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
 
 public class PdfDetailActivity extends AppCompatActivity {
 
@@ -56,6 +60,7 @@ public class PdfDetailActivity extends AppCompatActivity {
         loadBookDetails();
 
         MyApplication.incrementBookViewCount(bookId);
+
 
         binding.backBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,6 +115,7 @@ public class PdfDetailActivity extends AppCompatActivity {
             }
         });
     }
+
 
     //request storage per
     private ActivityResultLauncher<String> requestPermissionLauncher =

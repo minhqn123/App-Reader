@@ -12,7 +12,9 @@ import android.view.View;
 import com.bumptech.glide.Glide;
 import com.example.myapplication.MyApplication;
 import com.example.myapplication.R;
+import com.example.myapplication.adapters.AdapterPdfFavorite;
 import com.example.myapplication.databinding.ActivityProfileBinding;
+import com.example.myapplication.models.ModelPdf;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -20,11 +22,16 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class ProfileActivity extends AppCompatActivity {
 
     private ActivityProfileBinding binding;
 
     private FirebaseAuth firebaseAuth;
+
+    private ArrayList<ModelPdf> pdfArrayList;
+    private AdapterPdfFavorite adapterPdfFavorite;
 
     private static final String TAG = "PROFILE_TAG";
 
@@ -37,6 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
         //setup firebase auth
         firebaseAuth = FirebaseAuth.getInstance();
         loadUserInfo();
+        loadFavoriteBooks();
 
         //handle click, start profile edit
         binding.profileEditBtn.setOnClickListener(new View.OnClickListener() {
@@ -55,6 +63,45 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
+    private void loadFavoriteBooks(){
+        //init list
+        pdfArrayList = new ArrayList<>();
+
+        //load favorite books from database
+        //Users > userId > Favorites
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
+        ref.child(firebaseAuth.getUid()).child("Favorites")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        pdfArrayList.clear();
+                        for(DataSnapshot ds: snapshot.getChildren()){
+                            //get bookId
+                            String bookId = ""+ds.child("bookId").getValue();
+
+                            //set id to model
+                            ModelPdf modelPdf = new ModelPdf();
+                            modelPdf.setId(bookId);
+
+                            //add model to list
+                            pdfArrayList.add(modelPdf);
+
+                        }
+
+                        //set number of favorite books
+                        binding.favoriteBookCountTv.setText(""+pdfArrayList.size());
+                        //setup adapter
+                        adapterPdfFavorite = new AdapterPdfFavorite(ProfileActivity.this, pdfArrayList);
+                        //set adapter to recyclerview
+                        binding.booksRv.setAdapter(adapterPdfFavorite);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+    }
     private void loadUserInfo(){
         Log.d(TAG, "loadUserInfo: Loading user info of user "+firebaseAuth.getUid());
 
@@ -92,4 +139,5 @@ public class ProfileActivity extends AppCompatActivity {
                     }
                 });
     }
+
 }
